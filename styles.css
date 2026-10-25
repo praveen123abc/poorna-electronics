@@ -20,3 +20,123 @@
  .image-quantity button{width:24px;font-size:24px}
  .image-quantity .quantity-number{font-size:18px}
 }
+.cart-icon{width:27px;height:27px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;display:block}.fixed-cart{position:fixed;right:20px;bottom:20px;z-index:8;display:flex;align-items:center;gap:10px;border:0;border-radius:999px;padding:14px 18px;background:var(--gold);color:#111;font-weight:800;box-shadow:0 8px 28px #0008;cursor:pointer}.fixed-cart.hidden{display:none!important}.fixed-cart .cart-icon{width:22px;height:22px}.fixed-cart b{display:grid;place-items:center;background:#111;color:white;min-width:24px;height:24px;border-radius:50%;font-size:12px;padding:0 5px}@media(max-width:620px){.fixed-cart{right:12px;bottom:12px;padding:12px 14px;font-size:12px}}
+
+
+/* Verified final overrides: contain product images and keep the price row visible */
+.product-card {
+  overflow: hidden;
+}
+.product-image {
+  position: relative;
+  display: block;
+  height: 205px;
+  overflow: hidden !important;
+  background: #f3f3f3;
+}
+.product-image > img,
+.product-image img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  transform: none !important;
+}
+.product-image .image-quantity {
+  position: absolute !important;
+  right: 10px !important;
+  bottom: 8px !important;
+  z-index: 3;
+}
+.product-card .product-bottom {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+.product-card .price {
+  display: block !important;
+  color: #fff;
+}
+@media (max-width: 620px) {
+  .product-image {
+    height: 205px;
+  }
+  .product-image .image-quantity {
+    right: 7px !important;
+    bottom: 7px !important;
+  }
+}
+
+/* Header admin link and contact page link */
+.brand-area{display:flex;align-items:center;gap:14px;min-width:0}
+.brand-area .brand{min-width:0}
+.manage-catalogue-link{font-size:11px;font-weight:700;color:var(--gold);border:1px solid #66501f;border-radius:20px;padding:8px 10px;white-space:nowrap}
+.manage-catalogue-link:hover{background:#2b2416}
+footer a{color:var(--gold);text-decoration:underline;text-underline-offset:3px}
+@media(max-width:900px){.brand-area{gap:8px}.manage-catalogue-link{font-size:10px;padding:7px 8px}}
+@media(max-width:620px){.brand-area{grid-column:1;grid-row:1;gap:7px;flex-wrap:wrap}.brand{white-space:normal}.manage-catalogue-link{font-size:9px;padding:5px 7px}.brand-logo{display:none}}
+
+
+/* Shared site navigation */
+.topbar {
+  grid-template-columns: auto minmax(260px,1fr) minmax(220px,560px) auto;
+  gap: 18px;
+}
+.brand-area { min-width:0; }
+.main-nav {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  white-space:nowrap;
+}
+.nav-link {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:0;
+  background:transparent;
+  color:#eee;
+  font-size:13px;
+  font-weight:700;
+  padding:9px 0;
+  cursor:pointer;
+}
+.nav-link:hover,.nav-link.active { color:var(--gold); }
+.nav-logout { font-family:inherit; }
+.hidden { display:none !important; }
+.contact-topbar { grid-template-columns:auto 1fr; }
+.contact-topbar .main-nav { justify-content:flex-end; }
+.site-admin-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  padding:16px 4vw;
+  background:#050505;
+  border-bottom:1px solid var(--line);
+}
+.site-admin-header .brand { font-size:21px; }
+.site-admin-header .main-nav { flex-wrap:wrap; }
+@media(max-width:1120px) {
+  .topbar {
+    height:auto;
+    min-height:94px;
+    grid-template-columns:1fr auto;
+    padding:14px 18px;
+  }
+  .topbar .main-nav { grid-column:1 / -1; grid-row:2; justify-content:flex-start; flex-wrap:wrap; }
+  .topbar .search { grid-column:1 / -1; grid-row:3; width:100%; }
+  .topbar .cart-top { grid-column:2; grid-row:1; }
+  .contact-topbar { grid-template-columns:1fr; }
+  .contact-topbar .main-nav { grid-column:1; grid-row:2; }
+}
+@media(max-width:620px) {
+  .main-nav { gap:12px; justify-content:flex-start; flex-wrap:wrap; }
+  .nav-link { font-size:12px; }
+  .site-admin-header { flex-wrap:wrap; }
+  .site-admin-header .main-nav { width:100%; justify-content:flex-start; }
+}

@@ -16,6 +16,59 @@ const products=[
 ];
 const $=id=>document.getElementById(id),cart=new Map();
 let activeCategory="All",searchTerm="";
+let usingSupabase=false;
+const demoProducts=products.slice();
+const supabaseUrl=window.POORNA_SUPABASE_URL;
+const supabaseKey=window.POORNA_SUPABASE_PUBLISHABLE_KEY;
+const supabaseClient=(supabaseUrl&&supabaseKey&&!supabaseUrl.includes('YOUR_PROJECT_REF')&&!supabaseKey.includes('YOUR_SUPABASE'))?window.supabase.createClient(supabaseUrl,supabaseKey):null;
+async function updateAdminLink(session){
+ const manage=$('manageCatalogueLink'),login=$('adminLoginLink'),logout=$('navLogoutBtn');
+ if(!supabaseClient){
+  if(manage)manage.classList.add('hidden');
+  if(login)login.classList.remove('hidden');
+  if(logout)logout.classList.add('hidden');
+  return;
+ }
+ if(!session?.user){
+  if(manage)manage.classList.add('hidden');
+  if(login)login.classList.remove('hidden');
+  if(logout)logout.classList.add('hidden');
+  return;
+ }
+ const {data,error}=await supabaseClient.from('admins').select('user_id').eq('user_id',session.user.id).maybeSingle();
+ const admin=!!data&&!error;
+ if(manage)manage.classList.toggle('hidden',!admin);
+ if(login)login.classList.toggle('hidden',admin);
+ if(logout)logout.classList.toggle('hidden',!admin);
+}
+
+if(supabaseClient){
+ supabaseClient.auth.getSession().then(({data})=>updateAdminLink(data.session));
+ supabaseClient.auth.onAuthStateChange((_event,session)=>{updateAdminLink(session);});
+}
+const navLogout=$('navLogoutBtn');
+if(navLogout)navLogout.addEventListener('click',async()=>{
+ if(supabaseClient)await supabaseClient.auth.signOut();
+ window.location.href='index.html';
+});
+
+async function loadCatalogue(){
+ try{
+  if(!supabaseClient)return;
+  const client=supabaseClient;
+  const [{data:cats,error:catErr},{data:rows,error:prodErr}]=await Promise.all([
+   client.from('categories').select('id,name').order('name'),
+   client.from('products').select('id,name,description,price,image_url,category_id,is_available').eq('is_available',true).order('name')
+  ]);
+  if(catErr||prodErr)throw catErr||prodErr;
+  if(Array.isArray(rows)){
+   const catMap=new Map((cats||[]).map(c=>[String(c.id),c.name]));
+   products.splice(0,products.length,...rows.map(r=>({id:String(r.id),name:r.name,category:catMap.get(String(r.category_id))||'Other',price:Number(r.price)||0,description:r.description||'',image:r.image_url||'',icon:'⚙'})));
+   usingSupabase=true;
+  }
+  renderCategories();renderProducts();renderCart();
+ }catch(err){console.warn('Could not load Supabase catalogue; demo products remain visible.',err);}
+}
 const money=n=>"₹"+Number(n).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function updateBrand(){ $("brandName").textContent=STORE_NAME;$("footerBrand").textContent=STORE_NAME;document.title=STORE_NAME+" | Product Catalogue";}
@@ -36,7 +89,7 @@ function renderProducts(){
 function renderCart(){
  const list=[...cart.entries()].map(([id,q])=>({p:products.find(p=>p.id===id),q})).filter(x=>x.p);
  const qty=list.reduce((s,x)=>s+x.q,0),total=list.reduce((s,x)=>s+x.p.price*x.q,0);
- $("cartCount").textContent=qty;$("cartTotal").textContent=money(total);$("checkoutTotal").textContent=money(total);
+ $("cartCount").textContent=qty;$("cartTotal").textContent=money(total);$("checkoutTotal").textContent=money(total);if($("fixedCart")){ $("fixedCartCount").textContent=qty;$("fixedCart").classList.toggle("hidden",qty===0); }
  $("cartEmpty").classList.toggle("hidden",list.length>0);$("cartItems").classList.toggle("hidden",!list.length);
  $("cartItems").innerHTML=list.map(({p,q})=>`<div class="cart-row"><div class="cart-product">${p.image?`<img src="${esc(p.image)}" alt="">`:`<div class="cart-placeholder">${esc(p.icon||"⚙")}</div>`}<div><div class="cart-product-name">${esc(p.name)}</div><div class="cart-product-price">${money(p.price)}</div></div></div><div class="quantity-area"><div class="quantity-control"><button data-qty="${esc(p.id)}" data-delta="-1" aria-label="Decrease quantity">−</button><span>${q}</span><button data-qty="${esc(p.id)}" data-delta="1" aria-label="Increase quantity">+</button></div><button class="delete-btn" data-remove="${esc(p.id)}" aria-label="Remove ${esc(p.name)}">♧</button></div></div>`).join("");
 }
@@ -68,7 +121,7 @@ $("productGrid").addEventListener("click",e=>{
  renderCart();renderProducts();toast("Cart updated");
 });
 $("cartItems").addEventListener("click",e=>{const q=e.target.closest("[data-qty]"),r=e.target.closest("[data-remove]");if(q){const n=(cart.get(q.dataset.qty)||0)+Number(q.dataset.delta);if(n<=0)cart.delete(q.dataset.qty);else cart.set(q.dataset.qty,n);renderCart();renderProducts()}if(r){cart.delete(r.dataset.remove);renderCart();renderProducts()}});
-$("openCart").addEventListener("click",openCart);$("closeCart").addEventListener("click",closeCart);$("overlay").addEventListener("click",closeCart);$("continueShopping").addEventListener("click",closeCart);
+$("openCart").addEventListener("click",openCart);if($("fixedCart"))$("fixedCart").addEventListener("click",openCart);$("closeCart").addEventListener("click",closeCart);$("overlay").addEventListener("click",closeCart);$("continueShopping").addEventListener("click",closeCart);
 $("clearCart").addEventListener("click",()=>{cart.clear();renderCart();renderProducts()});
 $("checkout").addEventListener("click",()=>{
  if(!cart.size){toast("Add a product to your cart first.");return}
@@ -80,4 +133,4 @@ $("checkout").addEventListener("click",()=>{
  const url=`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
  window.open(url,"_blank","noopener");
 });
-updateBrand();setupWhatsApp();renderCategories();renderProducts();renderCart();
+updateBrand();setupWhatsApp();renderCategories();renderProducts();renderCart();loadCatalogue();
