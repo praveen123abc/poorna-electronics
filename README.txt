@@ -1,41 +1,66 @@
-POORNA ELECTRONICS PRODUCT CATALOGUE — DEMO
+POORNA ELECTRONICS CATALOGUE v5 (PREVIEW)
+========================================
 
-FILES
-- index.html: page structure
-- styles.css: dark theme and responsive layout
-- app.js: sample product list, search, categories, cart and WhatsApp checkout
+Files
+-----
+index.html            Public product catalogue
+styles.css            Public website styling
+app.js                Cart, WhatsApp checkout and public catalogue loading
+admin.html            Private admin login and catalogue manager
+admin.css             Admin page styling
+admin.js              Admin authentication and CRUD functions
+supabase-config.js    Public Supabase URL and publishable key
 
-STORE SETTINGS
-The website name is set to Poorna Electronics.
-WhatsApp checkout is set to 918498068587 (India country code + number, digits only).
+BEFORE PUBLISHING
+-----------------
+1. Open supabase-config.js.
+2. Replace YOUR_PROJECT_REF with your Supabase project URL (the project URL is visible in Supabase Settings > API Keys / Data API).
+3. Replace YOUR_SUPABASE_PUBLISHABLE_KEY with the project's sb_publishable_... key.
+   Do NOT use an sb_secret_... key or service_role key in browser files.
+4. Upload all these files to the ROOT of your existing GitHub repository, replacing the old index.html/styles.css/app.js and adding admin.html/admin.css/admin.js/supabase-config.js.
+5. Keep the Supabase URL and publishable key public-safe; never commit secret keys.
 
-TEST
-1. Extract this ZIP.
-2. Open index.html in Chrome.
-3. Click Add to cart. The button should briefly show “✓ Added +1”, and the cart badge at the top should increase.
-4. Open the cart, change quantities and test the total.
-5. WhatsApp checkout opens with the product names, quantities, unit prices, line totals and grand total.
+SUPABASE EXPECTATIONS
+--------------------
+- Existing tables: public.products and public.categories.
+- Existing admin allowlist table: public.admins; the signed-in user's auth UID must have a row.
+- Existing Row Level Security policies: public catalogue SELECT access, admin-only INSERT/UPDATE/DELETE.
+- Existing Storage bucket: Product_images (exact bucket name).
+- Existing storage policies: public SELECT; admins only INSERT/UPDATE/DELETE.
+- Product table columns expected: id, name, description, price, image_url, category_id, is_available, created_at, updated_at.
+- Category table columns expected: id, name, created_at.
 
-HOW TO REPLACE SAMPLE PRODUCTS FOR NOW
-1. Open app.js in Notepad or another text editor.
-2. Find the `const products = [` section near the top.
-3. Each product is one object, for example:
-   {id:"LED003",name:"LED Headlight",category:"Lighting",price:450,description:"Bright LED headlight.",icon:"✦"}
-4. Change id, name, category, price and description. Keep the quotation marks and commas.
-5. To add another product, copy one complete product object, paste it inside the array, and give it a unique id.
-6. Save app.js and refresh the website.
-7. For a photo, upload an image into an `images` folder in the GitHub repository and add `image:"images/your-photo.jpg"` to that product object. Use simple file names.
+IMPORTANT SECURITY NOTES
+------------------------
+- This frontend checks the signed-in user against public.admins, but Supabase RLS remains the real security boundary.
+- Never disable RLS or add a public write policy.
+- Public bucket images can be viewed by anyone with their URLs. Uploading/replacing/deleting is intended to remain admin-only.
+- Before using with real catalogue data, test as the admin and test that an ordinary non-admin account cannot insert/update/delete products or images.
+- Do not use an admin account password on a shared computer.
 
-IMPORTANT FUTURE PLAN
-This version still uses sample products stored in app.js. Anyone with repository access can edit them, and it does not yet have a database or admin login. We will later connect a database and image storage, then build a protected admin panel with login and Excel import. Do not treat hiding an admin page as security; product updates must be protected by database permissions and authenticated access.
+CURRENT BEHAVIOUR
+-----------------
+- If Supabase configuration is not filled in, the public page displays the original demo products.
+- When configured successfully, the public page loads available products from Supabase.
+- Admin URL: https://praveen123abc.github.io/poorna-electronics/admin.html (after publishing).
+- Product images are uploaded to Product_images/products/ and their public URLs are stored in products.image_url.
+- Deleting a category is blocked if products still belong to it. Reassign products first.
+- Product deletion asks for confirmation.
+- Excel import is not included in this preview; it remains a planned later enhancement.
 
-UPLOAD TO GITHUB
-1. Open your repository and click Add file > Upload files.
-2. Upload/replace index.html, styles.css and app.js at the repository root.
-3. Commit changes, then wait for GitHub Pages to redeploy.
 
-CART BUTTON BEHAVIOUR
-Each product's Add to cart button now keeps a count such as '✓ Added +1' and '✓ Added +2'. To publish this fix, replace app.js in GitHub and commit the change.
+Recent updates
+- Removed the AP initials beside the Poorna Electronics name.
+- Added Contact Us page at contact.html with the supplied Sircilla address, phone number, and map link.
+- Added a Manage catalogue link that is hidden unless the browser has an authenticated Supabase session and that account is present in public.admins.
+- admin.html can still be opened directly, but catalogue controls are shown only after sign-in and admin verification. Database RLS remains the actual security boundary.
 
-PRODUCT CARD QUANTITY CONTROL
-The + button is overlaid at the bottom-right of each product image. After adding one item, it becomes a minus / quantity / plus control. It stays in sync with the cart. To publish, upload the updated app.js and styles.css to GitHub and commit.
+Before publishing
+- Verify supabase-config.js contains your Supabase Project URL and sb_publishable_... key. Never publish a secret/service_role key.
+- Test admin login, image upload, and catalogue reads on the deployed GitHub Pages URL.
+
+
+Navigation update:
+- Home, Contact Us, Admin login, and (for authenticated admins only) Manage catalogue are in the top navigation.
+- After logout, the browser returns to index.html.
+- Poorna Electronics brand link returns to the home page.
