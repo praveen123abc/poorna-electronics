@@ -4,23 +4,16 @@
  */
 const STORE_NAME="Poorna Electronics";
 const WHATSAPP_NUMBER="918498068587"; // Poorna Electronics WhatsApp number.
-const products=[
-{id:"CON001",name:"Conset - Universal - BUDGET FRIENDLY (BF) Quality",category:"Bearings and Consets",price:89,description:"Universal conset kit. Confirm compatibility before ordering.",icon:"⚙",tag:"POPULAR"},
-{id:"BRG002",name:"Ball Bearing Compatible with Olaaa",category:"Bearings and Consets",price:278,description:"Replacement ball bearing. Confirm exact model before ordering.",icon:"◉"},
-{id:"LED003",name:"LED Headlight",category:"Lighting",price:450,description:"Bright LED headlight for compatible vehicles.",icon:"✦"},
-{id:"IND004",name:"Indicator Light",category:"Lighting",price:150,description:"Compact indicator light for compatible vehicles.",icon:"◉"},
-{id:"MIR005",name:"Rear View Mirror",category:"Accessories",price:250,description:"Everyday rear-view mirror replacement.",icon:"◐"},
-{id:"HRN006",name:"Electric Horn",category:"Electrical",price:320,description:"Clear, dependable horn for compatible vehicles.",icon:"♫"},
-{id:"CBL007",name:"Wiring Cable Set",category:"Electrical",price:180,description:"Cable set for repair and replacement work.",icon:"⌁"},
-{id:"BRK008",name:"Brake Lever",category:"Brake Cable",price:120,description:"Replacement lever. Confirm model compatibility.",icon:"↗"}
-];
+const products=[];
 const $=id=>document.getElementById(id),cart=new Map();
 let activeCategory="All",searchTerm="";
 let usingSupabase=false;
-const demoProducts=products.slice();
 const supabaseUrl=window.POORNA_SUPABASE_URL;
 const supabaseKey=window.POORNA_SUPABASE_PUBLISHABLE_KEY;
-const supabaseClient=(supabaseUrl&&supabaseKey&&!supabaseUrl.includes('YOUR_PROJECT_REF')&&!supabaseKey.includes('YOUR_SUPABASE'))?window.supabase.createClient(supabaseUrl,supabaseKey):null;
+const supabaseClient=(window.supabase && supabaseUrl && supabaseKey &&
+ !supabaseUrl.includes('YOUR_PROJECT_REF') &&
+ !supabaseKey.includes('YOUR_SUPABASE') &&
+ !supabaseKey.includes('PASTE_YOUR')) ? window.supabase.createClient(supabaseUrl,supabaseKey) : null;
 async function updateAdminLink(session){
  const manage=$('manageCatalogueLink'),login=$('adminLoginLink'),logout=$('navLogoutBtn');
  if(!supabaseClient){
@@ -53,21 +46,37 @@ if(navLogout)navLogout.addEventListener('click',async()=>{
 });
 
 async function loadCatalogue(){
+ const errorBox=$('connectionError');
+ const grid=$('productGrid');
+ if(errorBox){errorBox.classList.add('hidden');errorBox.textContent='';}
+ if(!supabaseClient){
+   products.splice(0,products.length);
+   renderCategories();renderProducts();renderCart();
+   if(errorBox){errorBox.textContent='Catalogue connection is not configured. Check supabase-config.js and its publishable key.';errorBox.classList.remove('hidden');}
+   return;
+ }
  try{
-  if(!supabaseClient)return;
   const client=supabaseClient;
   const [{data:cats,error:catErr},{data:rows,error:prodErr}]=await Promise.all([
    client.from('categories').select('id,name').order('name'),
    client.from('products').select('id,name,description,price,image_url,category_id,is_available').eq('is_available',true).order('name')
   ]);
-  if(catErr||prodErr)throw catErr||prodErr;
-  if(Array.isArray(rows)){
-   const catMap=new Map((cats||[]).map(c=>[String(c.id),c.name]));
-   products.splice(0,products.length,...rows.map(r=>({id:String(r.id),name:r.name,category:catMap.get(String(r.category_id))||'Other',price:Number(r.price)||0,description:r.description||'',image:r.image_url||'',icon:'⚙'})));
-   usingSupabase=true;
-  }
+  if(catErr) throw new Error('Could not load categories: '+catErr.message);
+  if(prodErr) throw new Error('Could not load products: '+prodErr.message);
+  const catMap=new Map((cats||[]).map(c=>[String(c.id),c.name]));
+  products.splice(0,products.length,...(rows||[]).map(r=>({
+   id:String(r.id),name:r.name,category:catMap.get(String(r.category_id))||'Other',
+   price:Number(r.price)||0,description:r.description||'',image:r.image_url||'',icon:'⚙'
+  })));
+  usingSupabase=true;
   renderCategories();renderProducts();renderCart();
- }catch(err){console.warn('Could not load Supabase catalogue; demo products remain visible.',err);}
+  if(errorBox && products.length===0){errorBox.textContent='Your Supabase connection works, but there are no available products to display.';errorBox.classList.remove('hidden');}
+ }catch(err){
+  console.error('Supabase catalogue load failed:',err);
+  products.splice(0,products.length);
+  renderCategories();renderProducts();renderCart();
+  if(errorBox){errorBox.textContent='Could not load catalogue from Supabase. '+(err.message||'Check your connection and table permissions.');errorBox.classList.remove('hidden');}
+ }
 }
 const money=n=>"₹"+Number(n).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
