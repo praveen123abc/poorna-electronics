@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Browse products and order through WhatsApp.">
+<title>Poorna Electronics | Product Catalogue</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#"><span class="brand-logo">AP</span><span id="brandName">Poorna Electronics</span></a>
+  <label class="search"><input id="searchInput" type="search" placeholder="Search..." aria-label="Search products"><span aria-hidden="true">⌕</span></label>
+  <button class="cart-top" id="openCart" aria-label="Open cart"><span class="bag">♧</span><span class="cart-count" id="cartCount">0</span></button>
+</header>
+<nav class="category-nav"><button class="menu-btn" id="menuBtn" aria-label="Show categories">☰</button><div id="categoryList" class="categories"></div></nav>
+<main>
+<section class="catalogue" id="catalogue"><div class="section-top"><div><p class="eyebrow">CATALOGUE</p><h1>Browse products</h1></div><span id="resultCount" class="muted"></span></div><div id="productGrid" class="product-grid"></div><p id="emptyState" class="empty hidden">No products found. Try another search or category.</p></section>
+<section class="contact"><div><h2>Need help finding a part?</h2><p>Ask us about product fitment, stock or bulk quantities.</p></div><a id="contactWhatsapp" class="contact-link" href="#" target="_blank" rel="noopener">Chat on WhatsApp ↗</a></section>
+</main>
+<footer><span><b id="footerBrand">Poorna Electronics</b> · Product catalogue</span><span>Demo website — sample products and prices</span></footer>
+<div id="overlay" class="overlay hidden"></div>
+<aside id="drawer" class="drawer" aria-label="Your cart" aria-hidden="true">
+  <div class="drawer-head"><h2>Your cart</h2><button id="closeCart" class="close" aria-label="Close cart">×</button></div>
+  <div class="drawer-actions"><button id="continueShopping">Continue shopping</button><button id="clearCart">Clear cart</button></div>
+  <div class="cart-labels"><span>PRODUCT</span><span>QUANTITY</span></div>
+  <div id="cartItems" class="cart-items"></div>
+  <div id="cartEmpty" class="cart-empty"><span>🛒</span><b>Your cart is empty</b><p>Add products to prepare your WhatsApp order.</p></div>
+  <div class="cart-bottom"><div class="grand-total"><span>Total amount</span><strong id="cartTotal">₹0.00</strong></div><p class="fine-print">Please confirm final prices and availability with us.</p><button id="checkout" class="whatsapp-checkout"><span>◉</span> Order on WhatsApp — <b id="checkoutTotal">₹0.00</b></button></div>
+</aside>
+<div id="toast" class="toast hidden" role="status"></div>
+<script src="app.js"></script>
+</body></html>
