@@ -18,7 +18,7 @@ body.dark-mode {
   --input-bg: #0f172a; --input-text: #f8fafc;
 }
 *{box-sizing:border-box;font-family:system-ui,sans-serif}
-body{margin:0;background:var(--bg-body);padding:10px}
+body{margin:0;background:var(--bg-body);padding:10px;transition:background 0.3s}
 .card{max-width:520px;margin:0 auto 14px;background:var(--bg-card);border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.2);color:var(--text-main)}
 .header{background:#0f172a;color:#fff;padding:16px;text-align:center;border-bottom:3px solid #facc15;position:relative}
 .header h1{margin:0;font-size:22px}
@@ -66,6 +66,7 @@ input,select{width:100%;padding:11px;border:1px solid var(--border-color);border
 .report-stat{display:flex;justify-content:space-between;background:var(--item-bg);border:1px solid var(--item-border);padding:10px;border-radius:8px;margin-top:6px}
 .report-list{max-height:280px;overflow:auto;margin-top:8px;border:1px solid var(--border-color);border-radius:8px}
 .report-item{padding:8px 10px;border-bottom:1px solid var(--border-color);font-size:12px;display:flex;justify-content:space-between}
+
 .serial-ocr-row{display:flex;gap:6px;align-items:stretch;margin-top:8px}
 .serial-ocr-row input{margin-top:0}
 .serial-ocr-row button{padding:0 11px;white-space:nowrap;font-size:12px}
@@ -89,6 +90,7 @@ input,select{width:100%;padding:11px;border:1px solid var(--border-color);border
   <p>Electronics & Electric Vehicle<br>Sales & Service</p>
 </div>
 <div class="body">
+
 <div id="serialOcrModal" class="ocr-modal" role="dialog" aria-modal="true">
   <div class="ocr-dialog">
     <h3>Read Motor Serial Number</h3>
@@ -101,6 +103,7 @@ input,select{width:100%;padding:11px;border:1px solid var(--border-color);border
     <div id="serialOcrStatus" aria-live="polite">Camera will start when you tap Scan.</div>
   </div>
 </div>
+
 
 <div class="section-head"><h3>👤 CUSTOMER</h3><button class="clearBtn" onclick="clearCustomerSection()">Clear</button></div>
 <div class="customer-row"><input id="cname" placeholder="Customer Name *"><button class="save-customer" onclick="saveCustomer()">Save</button></div>
@@ -136,7 +139,10 @@ input,select{width:100%;padding:11px;border:1px solid var(--border-color);border
 <label>🔧 TESTING ONLY</label>
 <div class="item" style="background:#fef9c3;color:#000"><div class="item-left"><input type="checkbox" class="chk testing-opt" data-price="200" data-name="Motor Testing (Without Open)" id="testingChk"><b style="flex:1">Motor Testing (Without Open)</b><b>Rs.200</b></div></div>
 <div class="item" style="background:#e0f2fe;color:#000"><div class="item-left"><input type="checkbox" class="chk testing-opt" data-price="200" data-name="Motor Testing (With Open)" id="testingWithOpenChk"><b style="flex:1">Motor Testing (With Open)</b><b>Rs.200</b></div></div>
-<div id="windingBox" style="display:none"><div class="item" style="background:#fee2e2;color:#000;border:2px solid #ef4444"><div class="item-left"><input type="checkbox" id="windingShortChk" data-name="Motor Winding Shorted - Not Repairable"><b style="flex:1;color:#991b1b">⚠️ Winding Shorted - Not Repairable</b><b style="color:#991b1b">Rs.0</b></div></div></div>
+
+<div id="windingBox" style="display:none">
+<div class="item" style="background:#fee2e2;color:#000;border:2px solid #ef4444"><div class="item-left"><input type="checkbox" id="windingShortChk" data-name="Motor Winding Shorted - Not Repairable"><b style="flex:1;color:#991b1b">⚠️ Winding Shorted - Not Repairable</b><b style="color:#991b1b">Rs.0</b></div></div>
+</div>
 
 <label>🔩 FIXED & CLEANING</label>
 <div class="item open-related" style="background:#e0f2fe;color:#000"><div class="item-left"><input type="checkbox" id="ocChk" data-price="500" data-name="Open & Close Charges"><div style="flex:1"><b>Motor Open & Close</b></div><b>500</b></div></div>
@@ -144,21 +150,42 @@ input,select{width:100%;padding:11px;border:1px solid var(--border-color);border
 <div class="item open-related"><div class="item-left"><input type="checkbox" id="rustChk" class="chk" data-price="100" data-name="Rust Cleaning & Oil Spray"><b style="flex:1">Rust Cleaning + Oil Spray</b><b>+100</b></div></div>
 
 <label>🛠️ SPARES</label>
-<div class="item open-related"><div class="item-left"><input type="checkbox" id="bearingChk" class="chk" data-name="Bearing Replace"><div style="width:100%"><b>Bearing Replacement</b><div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;align-items:center"><select id="bearingModel" style="flex:1;min-width:130px;margin-top:0" onchange="setBearingPrice()"><option value="">Select Model</option><option value="6004" data-price="140">6004 - Rs.140</option><option value="6203" data-price="150">6203 - Rs.150</option><option value="6204" data-price="180">6204 - Rs.180</option><option value="6205" data-price="220">6205 - Rs.220</option></select><input id="bearingCost" class="small-input" type="number" placeholder="Price/pc" readonly><div class="toggle"><button id="singleBtn" class="active" onclick="setSide('single')">Single</button><button id="bothBtn" onclick="setSide('both')">Both</button></div></div></div></div></div>
+<div class="item open-related">
+  <div class="item-left">
+    <input type="checkbox" id="bearingChk" class="chk" data-name="Bearing Replace">
+    <div style="width:100%">
+      <b>Bearing Replacement</b>
+      <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;align-items:center">
+        <select id="bearingModel" style="flex:1;min-width:130px;margin-top:0" onchange="setBearingPrice()">
+          <option value="">Select Model</option>
+          <option value="6004" data-price="140">6004 - Rs.140</option>
+          <option value="6203" data-price="150">6203 - Rs.150</option>
+          <option value="6204" data-price="180">6204 - Rs.180</option>
+          <option value="6205" data-price="220">6205 - Rs.220</option>
+        </select>
+        <input id="bearingCost" class="small-input" type="number" placeholder="Price/pc" readonly>
+        <div class="toggle"><button id="singleBtn" class="active" onclick="setSide('single')">Single</button><button id="bothBtn" onclick="setSide('both')">Both</button></div>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="item open-related"><div class="item-left"><input type="checkbox" class="chk" data-price="350" data-name="Hall Sensor Set"><b style="flex:1">Hall Sensor</b><b>+350</b></div></div>
 <div class="item open-related"><div class="item-left"><input type="checkbox" class="chk" data-price="900" data-name="Magnet Replace"><b style="flex:1">Magnet Replace</b><b>+900</b></div></div>
 <div class="item open-related"><div class="item-left"><input type="checkbox" class="chk" data-price="550" data-name="Motor Cable Full Set"><b style="flex:1">Motor Cable</b><b>+550</b></div></div>
 <div class="item open-related"><div class="item-left"><input type="checkbox" class="chk" data-price="150" data-name="Phase Wire Only"><b style="flex:1">Phase Wire only</b><b>+150</b></div></div>
 <div class="item open-related"><div class="item-left"><input type="checkbox" id="sensorWireChk" class="chk" data-price="100" data-name="Sensor Wire Only"><b style="flex:1">Sensor Wire only</b><b>+100</b></div></div>
+
 <div class="item" id="connectorItem"><div class="item-left"><input type="checkbox" id="sensorConnChk" class="chk" data-price="150" data-name="Connector Replace"><b style="flex:1">Connector Replace</b><b>+150</b></div></div>
 
 <label>⚙️ ADDITIONAL REPAIR (Always Available)</label>
-<div class="item" id="additionalItem"><div class="item-left"><input type="checkbox" id="addRepairChk" class="chk"><div style="width:100%"><b>Additional Repair</b><div style="display:flex;gap:6px;margin-top:6px"><input id="addRepairName" placeholder="Description" style="flex:1;padding:8px;font-size:12px;margin-top:0"><input id="addRepairCost" class="small-input" type="number" placeholder="Rs"></div></div></div></div>
+<div class="item" id="additionalItem">
+  <div class="item-left"><input type="checkbox" id="addRepairChk" class="chk"><div style="width:100%"><b>Additional Repair</b><div style="display:flex;gap:6px;margin-top:6px"><input id="addRepairName" placeholder="Description" style="flex:1;padding:8px;font-size:12px;margin-top:0"><input id="addRepairCost" class="small-input" type="number" placeholder="Rs"></div></div></div>
+</div>
 
 <div class="totalBox"><span>💳 TOTAL</span><b id="total">💰 Rs.0</b></div>
 
-<label>CUSTOMER BILL (WhatsApp - only total)</label><div id="preview" class="bill-preview"></div>
-<label style="margin-top:14px">FULL REPORT (with breakup + JSON)</label><div id="fullPreview" class="bill-preview" style="background:var(--preview-bg);border-color:#2563eb"></div>
+<label>CUSTOMER BILL</label><div id="preview" class="bill-preview"></div>
+<label style="margin-top:14px">FULL REPORT (with breakup)</label><div id="fullPreview" class="bill-preview" style="background:var(--preview-bg);border-color:#2563eb"></div>
 
 <button class="btn btn-wa" onclick="sendWA()">📲 WhatsApp Bill - Customer</button>
 <button class="btn btn-share" onclick="shareBill()">🔗 Share Bill - Customer</button>
@@ -166,7 +193,7 @@ input,select{width:100%;padding:11px;border:1px solid var(--border-color);border
 
 <div style="border-top:2px solid #2563eb;margin-top:16px;padding-top:10px">
 <div id="folderName" style="font-size:11px;text-align:center;margin-top:6px;color:#16a34a;font-weight:700"></div>
-<button class="btn btn-save" onclick="saveFullTxt()">⬇️ SAVE - TXT with Text+JSON</button>
+<button class="btn btn-save" onclick="saveFullTxt()">⬇️ SAVE TXT - To Selected Folder</button>
 <button class="btn" style="background:#e2e8f0;color:#0f172a" onclick="copyFull()">📋 Copy Full Report</button>
 </div>
 
@@ -175,10 +202,14 @@ input,select{width:100%;padding:11px;border:1px solid var(--border-color);border
 <div class="report-box">
   <label>Filter By Date</label>
   <div style="display:flex;gap:6px"><input type="date" id="fromDate" style="flex:1"><input type="date" id="toDate" style="flex:1"></div>
-  <div style="display:flex;gap:6px;margin-top:6px"><select id="monthFilter" style="flex:1"><option value="">All Months</option><option value="0">Jan</option><option value="1">Feb</option><option value="2">Mar</option><option value="3">Apr</option><option value="4">May</option><option value="5">Jun</option><option value="6">Jul</option><option value="7">Aug</option><option value="8">Sep</option><option value="9">Oct</option><option value="10">Nov</option><option value="11">Dec</option></select><select id="yearFilter" style="flex:1"><option value="">All Years</option></select></div>
-  <label style="margin-top:8px">Filter By Customer</label><select id="customerReportFilter"><option value="">All Customers</option></select>
+  <div style="display:flex;gap:6px;margin-top:6px">
+    <select id="monthFilter" style="flex:1"><option value="">All Months</option><option value="0">Jan</option><option value="1">Feb</option><option value="2">Mar</option><option value="3">Apr</option><option value="4">May</option><option value="5">Jun</option><option value="6">Jul</option><option value="7">Aug</option><option value="8">Sep</option><option value="9">Oct</option><option value="10">Nov</option><option value="11">Dec</option></select>
+    <select id="yearFilter" style="flex:1"><option value="">All Years</option></select>
+  </div>
+  <label style="margin-top:8px">Filter By Customer</label>
+  <select id="customerReportFilter"><option value="">All Customers</option></select>
   <button class="btn btn-report" onclick="generateReport()">🔍 Show Report</button>
-  <button class="btn" style="background:#0f172a;color:#fff" onclick="reloadFromFolder()">📁 Reload From Folder (Text+JSON)</button>
+  <button class="btn" style="background:#0f172a;color:#fff" onclick="reloadFromFolder()">📁 Reload From Folder</button>
   <div id="reportStats"></div><div id="reportList" class="report-list" style="display:none"></div>
 </div>
 </div>
@@ -187,7 +218,6 @@ input,select{width:100%;padding:11px;border:1px solid var(--border-color);border
 </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
 let sel=null, phaseConns=JSON.parse(localStorage.getItem('phaseConns')||'[]'), hallConns=JSON.parse(localStorage.getItem('hallConns')||'[]');
 let final6Rows=JSON.parse(localStorage.getItem('final6Rows')||'[]'), finalDecimals=JSON.parse(localStorage.getItem('finalDecimals')||'[]'), totalPasted=parseInt(localStorage.getItem('totalPasted')||'0');
@@ -224,55 +254,80 @@ async function pickFolder(){ if(!window.showDirectoryPicker){ return null; } try
 function getHistory(){ try{return JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]')}catch(e){return[]} }
 function saveHistoryRecord(totalAmount){let serial=document.getElementById('serial').value.trim()||'NO-SNO'; let cname=document.getElementById('cname').value.trim()||'Customer'; let now=new Date(); let rec={id:Date.now(), dateISO:now.toISOString(), dateStr:now.toLocaleDateString('en-IN'), timeStr:now.toLocaleTimeString('en-IN'), serial:serial, customer:cname, vehicle:document.getElementById('vehicle').value.trim()||'-', total:totalAmount, month:now.getMonth(), year:now.getFullYear(), customerLower:cname.toLowerCase()}; let hist=getHistory(); hist.unshift(rec); if(hist.length>1000) hist=hist.slice(0,1000); localStorage.setItem(HISTORY_KEY, JSON.stringify(hist)); return rec;}
 function initYearFilter(){let sel=document.getElementById('yearFilter'); let hist=getHistory(); let years=[...new Set(hist.map(h=>h.year))].sort((a,b)=>b-a); let curYear=new Date().getFullYear(); if(!years.includes(curYear)) years.unshift(curYear); sel.innerHTML='<option value="">All Years</option>'; years.forEach(y=>{let o=document.createElement('option'); o.value=y; o.textContent=y; sel.appendChild(o);});}
-function loadCustomerReportFilter(){let sel=document.getElementById('customerReportFilter'); let hist=getHistory(); let customers=[...new Set(hist.map(h=>h.customer))].sort(); let current=sel.value; sel.innerHTML='<option value="">All Customers</option>'; customers.forEach(c=>{if(c&&c!=='Customer'&&c!=='-'){let o=document.createElement('option'); o.value=c.toLowerCase(); o.textContent=c; sel.appendChild(o);}}); let saved=getCustomers(); saved.forEach(sc=>{let low=sc.name.toLowerCase(); if(![...sel.options].some(o=>o.value===low)){let o=document.createElement('option'); o.value=low; o.textContent=sc.name; sel.appendChild(o);}}); if(current) sel.value=current;}
-function generateReport(){let fromVal=document.getElementById('fromDate').value; let toVal=document.getElementById('toDate').value; let monthVal=document.getElementById('monthFilter').value; let yearVal=document.getElementById('yearFilter').value; let custFilter=document.getElementById('customerReportFilter').value; let hist=getHistory(); let filtered=hist.filter(r=>{let d=new Date(r.dateISO); if(fromVal){ let from=new Date(fromVal); from.setHours(0,0,0,0); if(d<from) return false; } if(toVal){ let to=new Date(toVal); to.setHours(23,59,59,999); if(d>to) return false; } if(monthVal!==''&&r.month!=parseInt(monthVal)) return false; if(yearVal!==''&&r.year!=parseInt(yearVal)) return false; if(custFilter&&(r.customerLower||r.customer.toLowerCase())!==custFilter) return false; return true;}); let totalMotors=filtered.length; let totalBilling=filtered.reduce((sum,r)=>sum+(parseInt(r.total)||0),0); let statsDiv=document.getElementById('reportStats'); let listDiv=document.getElementById('reportList'); statsDiv.innerHTML=`<div class="report-stat"><b>Total Motors:</b><b>${totalMotors}</b></div><div class="report-stat"><b>Total Billing:</b><b style="color:#16a34a">Rs. ${totalBilling}</b></div><div class="report-stat"><b>Average / Motor:</b><b>Rs. ${totalMotors?Math.round(totalBilling/totalMotors):0}</b></div>`; if(filtered.length>0){listDiv.style.display='block'; listDiv.innerHTML=filtered.map(r=>`<div class="report-item"><span>${r.dateStr} - ${r.serial} (${r.customer})</span><b>Rs.${r.total}</b></div>`).join('');} else {listDiv.style.display='block'; listDiv.innerHTML='<div style="padding:12px;text-align:center;color:var(--text-muted)">No records found</div>';}}
-
-function extractJSONFromMixedFile(fullText){
-  const marker="========== JSON DATA FOR APP USE ==========";
-  let idx=fullText.indexOf(marker);
-  let jsonText="";
-  if(idx!==-1){
-    jsonText=fullText.substring(idx+marker.length).trim();
-  }else{
-    let last=fullText.lastIndexOf('{');
-    if(last!==-1) jsonText=fullText.substring(last);
-  }
-  let firstBrace=jsonText.indexOf('{');
-  if(firstBrace!==-1) jsonText=jsonText.substring(firstBrace);
-  try{ return JSON.parse(jsonText); }catch(e){ return null; }
+function loadCustomerReportFilter(){
+  let sel=document.getElementById('customerReportFilter');
+  let hist=getHistory();
+  let customers=[...new Set(hist.map(h=>h.customer))].sort();
+  let current=sel.value;
+  sel.innerHTML='<option value="">All Customers</option>';
+  customers.forEach(c=>{
+    if(c && c!=='Customer' && c!=='-'){
+      let o=document.createElement('option'); o.value=c.toLowerCase(); o.textContent=c; sel.appendChild(o);
+    }
+  });
+  // also add from saved customers
+  let saved=getCustomers();
+  saved.forEach(sc=>{
+    let low=sc.name.toLowerCase();
+    if(![...sel.options].some(o=>o.value===low)){
+      let o=document.createElement('option'); o.value=low; o.textContent=sc.name; sel.appendChild(o);
+    }
+  });
+  if(current) sel.value=current;
 }
-
+function generateReport(){
+  let fromVal=document.getElementById('fromDate').value;
+  let toVal=document.getElementById('toDate').value;
+  let monthVal=document.getElementById('monthFilter').value;
+  let yearVal=document.getElementById('yearFilter').value;
+  let custFilter=document.getElementById('customerReportFilter').value;
+  let hist=getHistory();
+  let filtered=hist.filter(r=>{
+    let d=new Date(r.dateISO);
+    if(fromVal){ let from=new Date(fromVal); from.setHours(0,0,0,0); if(d<from) return false; }
+    if(toVal){ let to=new Date(toVal); to.setHours(23,59,59,999); if(d>to) return false; }
+    if(monthVal!==''&&r.month!=parseInt(monthVal)) return false;
+    if(yearVal!==''&&r.year!=parseInt(yearVal)) return false;
+    if(custFilter && (r.customerLower||r.customer.toLowerCase())!==custFilter) return false;
+    return true;
+  });
+  let totalMotors=filtered.length;
+  let totalBilling=filtered.reduce((sum,r)=>sum+(parseInt(r.total)||0),0);
+  let statsDiv=document.getElementById('reportStats');
+  let listDiv=document.getElementById('reportList');
+  statsDiv.innerHTML=`<div class="report-stat"><b>Total Motors:</b><b>${totalMotors}</b></div><div class="report-stat"><b>Total Billing:</b><b style="color:#16a34a">Rs. ${totalBilling}</b></div><div class="report-stat"><b>Average / Motor:</b><b>Rs. ${totalMotors?Math.round(totalBilling/totalMotors):0}</b></div>`;
+  if(filtered.length>0){
+    listDiv.style.display='block';
+    listDiv.innerHTML=filtered.map(r=>`<div class="report-item"><span>${r.dateStr} - ${r.serial} (${r.customer})</span><b>Rs.${r.total}</b></div>`).join('');
+  } else {
+    listDiv.style.display='block';
+    listDiv.innerHTML='<div style="padding:12px;text-align:center;color:var(--text-muted)">No records found</div>';
+  }
+}
 async function reloadFromFolder(){
   if(!dirHandle){dirHandle=await pickFolder(); if(!dirHandle){ alert('Folder select cheyandi'); return; }}
   let hist=[];
   try{
     for await (const entry of dirHandle.values()){
-      if(entry.kind==='file' && entry.name.endsWith('.txt')){
+      if(entry.kind==='file'&&entry.name.endsWith('.txt')){
         try{
           const file=await entry.getFile();
           const text=await file.text();
-          let j=extractJSONFromMixedFile(text);
-          if(j){
-            let d=new Date(j.dateISO||j.dateTime||file.lastModified);
-            if(isNaN(d.getTime())) d=new Date(file.lastModified);
-            hist.push({id:j.id||file.lastModified, dateISO:d.toISOString(), dateStr:j.dateStr||d.toLocaleDateString('en-IN'), timeStr:j.timeStr||d.toLocaleTimeString('en-IN'), serial:j.serial||entry.name.replace('.txt',''), customer:j.customer?.name||j.customer||'-', customerLower:(j.customer?.name||j.customer||'-').toLowerCase(), vehicle:j.vehicle||'-', total:j.billing?.total||0, month:d.getMonth(), year:d.getFullYear()});
-          }else{
-            let totalMatch=text.match(/TOTAL AMOUNT:\s*Rs\.\s*(\d+)/i)||text.match(/Rs\.\s*(\d+)\s*\/-/);
-            let dateMatch=text.match(/Date & Time:\s*(.+)/)||text.match(/Date:\s*(.+)/);
-            let serialMatch=text.match(/Motor Serial Number:\s*(.+)/)||text.match(/Motor S\.No:\s*(.+)/);
-            let custMatch=text.match(/Customer Name:\s*(.+)/)||text.match(/Customer\s*:\s*(.+)/);
-            let total=totalMatch?parseInt(totalMatch[1]):0;
-            let dateStr=dateMatch?dateMatch[1].trim():''; let d=dateStr?new Date(dateStr):new Date(file.lastModified); if(isNaN(d.getTime())) d=new Date(file.lastModified);
-            let custName=custMatch?custMatch[1].trim():'-';
-            hist.push({id:file.lastModified, dateISO:d.toISOString(), dateStr:d.toLocaleDateString('en-IN'), timeStr:d.toLocaleTimeString('en-IN'), serial:serialMatch?serialMatch[1].trim():entry.name.replace('.txt',''), customer:custName, customerLower:custName.toLowerCase(), vehicle:'-', total:total, month:d.getMonth(), year:d.getFullYear()});
-          }
+          let totalMatch=text.match(/TOTAL AMOUNT:\s*Rs\.\s*(\d+)/i)||text.match(/Rs\.\s*(\d+)\s*\/-/);
+          let dateMatch=text.match(/Date & Time:\s*(.+)/)||text.match(/Date:\s*(.+)/);
+          let serialMatch=text.match(/Motor Serial Number:\s*(.+)/)||text.match(/Motor S\.No:\s*(.+)/);
+          let custMatch=text.match(/Customer Name:\s*(.+)/)||text.match(/Customer\s*:\s*(.+)/);
+          let total=totalMatch?parseInt(totalMatch[1]):0;
+          let dateStr=dateMatch?dateMatch[1].trim():''; let d=dateStr?new Date(dateStr):new Date(file.lastModified); if(isNaN(d.getTime())) d=new Date(file.lastModified);
+          let custName=custMatch?custMatch[1].trim():'-';
+          hist.push({id:file.lastModified, dateISO:d.toISOString(), dateStr:d.toLocaleDateString('en-IN'), timeStr:d.toLocaleTimeString('en-IN'), serial:serialMatch?serialMatch[1].trim():entry.name.replace('.txt',''), customer:custName, customerLower:custName.toLowerCase(), vehicle:'-', total:total, month:d.getMonth(), year:d.getFullYear()});
         }catch(e){}
       }
     }
     hist.sort((a,b)=>new Date(b.dateISO)-new Date(a.dateISO));
     localStorage.setItem(HISTORY_KEY, JSON.stringify(hist));
     initYearFilter(); loadCustomerReportFilter(); generateReport();
-    document.getElementById('folderName').innerText=`✅ Reloaded ${hist.length} records (Text+JSON extracted, no error)`;
+    document.getElementById('folderName').innerText=`✅ Reloaded ${hist.length} files from ${dirHandle.name}`;
   }catch(e){alert('Folder read error: '+e.message);}
 }
 
@@ -317,14 +372,17 @@ function update(){
  oc=document.getElementById('ocChk'); wash=document.getElementById('washChk'); rust=document.getElementById('rustChk');
  if((wash.checked||rust.checked)&&!testing.checked&&!testingWithOpen.checked) oc.checked=true;
  if(testing.checked){ oc.checked=false; wash.checked=false; rust.checked=false; }
+ 
  if(oc.checked){total+=500;list.push('• Motor Open & Close Charges'); listDetailed.push('• Motor Open & Close Charges - Rs.500');}
  if(wash.checked){total+=100;list.push('• Water Wash'); listDetailed.push('• Water Wash - Rs.100');}
  if(rust.checked){total+=100;list.push('• Rust Cleaning & Oil Spray'); listDetailed.push('• Rust Cleaning & Oil Spray - Rs.100');}
+ 
  document.querySelectorAll('.chk:checked').forEach(ch=>{
    if(ch.id==='washChk'||ch.id==='rustChk'||ch.id==='bearingChk'||ch.id==='addRepairChk'||ch.id==='windingShortChk')return;
    let price=parseInt(ch.dataset.price||0),name=ch.dataset.name;
    total+=price; list.push(`• ${name}`); listDetailed.push(`• ${name} - Rs.${price}`);
  });
+ 
  const bearingChk=document.getElementById('bearingChk');
  if(bearingChk&&bearingChk.checked){
    let cost=parseInt(document.getElementById('bearingCost').value)||0, model=document.getElementById('bearingModel').value.trim(), qty=side==='single'?1:2, price=cost*qty, modelStr=model?` Model #${model}`:'', bName=`Bearing Replace${modelStr} [${side==='single'?'Single':'Both'} Side x ${qty}]`;
@@ -336,10 +394,12 @@ function update(){
    total+=rCost; list.push(`• ${rName}`); listDetailed.push(`• ${rName} - Rs.${rCost}`);
  }
  if(windingShort&&windingShort.checked){ list.push('• ⚠️ Motor Winding Shorted - Not Repairable (Testing Only)'); listDetailed.push('• ⚠️ Motor Winding Shorted - Not Repairable (Testing Only) - Rs.0'); }
+ 
  document.getElementById('total').innerHTML='💰 Rs.'+total;
- window._currentTotal=total; window._currentListDetailed=listDetailed; window._currentList=list;
+ window._currentTotal=total;
  let now=new Date(), dt=now.toLocaleDateString('en-IN')+' '+now.toLocaleTimeString('en-IN'), cname=document.getElementById('cname').value||'Customer', serial=document.getElementById('serial').value||'-', vehicle=document.getElementById('vehicle').value||'-', remark=document.getElementById('remark').value.trim(), remarkStr=remark?`Remark   : ${remark}\n`:'';
  let decimalCombined=finalDecimals.length>0?finalDecimals.join(''):'-';
+ // CUSTOMER BILL - ONLY TOTAL (simple list)
  let customerBill=`______________________________
   POORNA ELECTRONICS
  Electronics & Electric Vehicle
@@ -363,6 +423,7 @@ ______________________________`;
  let phaseSection=""; if(phaseConns.length===0) phaseSection="Not Connected"; else{ phaseSection+="Motor      -     Controller\n"; phaseConns.forEach(c=>{ phaseSection+=` ${c.motorColor.padEnd(10,' ')} ->   ${c.ctrlColor}\n`; }); phaseSection=phaseSection.trimEnd(); }
  let hallSection=""; if(hallConns.length===0) hallSection="Not Connected"; else{ hallSection+="Motor      -     Controller\n"; hallConns.forEach(c=>{ hallSection+=` ${c.motorColor.padEnd(10,' ')} ->   ${c.ctrlColor}\n`; }); hallSection=hallSection.trimEnd(); }
  let sixRowsText=final6Rows.length>0?final6Rows.map(r=>r.rawLine).join('\n'):'Not Detected';
+ // FULL REPORT - WITH BREAKUP
  let fullReport=`BLDC MOTOR TEST REPORT
 
 Date & Time: ${dt}
@@ -397,7 +458,6 @@ document.addEventListener('change',()=>{update(); saveAllFields();}); document.a
 async function shareBill(){ const bill=window._bill||''; if(!bill){return} if(navigator.share){ try{ await navigator.share({title:'POORNA Bill', text:bill}); return; }catch(e){ if(e&&e.name==='AbortError') return; } } try{ await navigator.clipboard.writeText(bill); }catch(e){ prompt('Copy bill:',bill); } }
 async function copyBill(){ const bill=window._bill||''; if(!bill){return} try{ await navigator.clipboard.writeText(bill); }catch(e){ prompt('Copy:',bill); } }
 function sendWA(){ let phone=document.getElementById('cphone').value.trim(); if(!phone){return} let cleanPhone=phone.replace(/\D/g,''); if(cleanPhone.length===10)cleanPhone='91'+cleanPhone; window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(window._bill)}`,'_blank') }
-
 async function saveFullTxt(){
   let sno=document.getElementById('serial').value.trim(); 
   if(!sno){ alert('Please enter Motor S.No'); return; }
@@ -407,69 +467,35 @@ async function saveFullTxt(){
   let yyyy=now.getFullYear();
   let dateStr=`${dd}${mm}${yyyy}`;
   let fileName=`${sno}_${dateStr}.txt`;
-  
   if(!dirHandle){ dirHandle=await pickFolder(); if(!dirHandle) return; }
   try{
-    let cname=document.getElementById('cname').value.trim()||'Customer';
-    let cphone=document.getElementById('cphone').value.trim()||'-';
-    let vehicle=document.getElementById('vehicle').value.trim()||'-';
-    let remark=document.getElementById('remark').value.trim()||'-';
-    let bearingModel=document.getElementById('bearingModel').value.trim();
-    let bearingCost=document.getElementById('bearingCost').value.trim();
-    
-    let jsonData={
-      id: Date.now(),
-      dateISO: now.toISOString(),
-      dateTime: now.toLocaleString('en-IN'),
-      dateStr: now.toLocaleDateString('en-IN'),
-      timeStr: now.toLocaleTimeString('en-IN'),
-      ddmmyyyy: dateStr,
-      serial: sno,
-      customer: { name: cname, phone: cphone },
-      vehicle: vehicle,
-      remark: remark,
-      phaseWiring: phaseConns,
-      hallWiring: hallConns,
-      tester: {
-        totalPasted: totalPasted,
-        sixRows: final6Rows,
-        decimals: finalDecimals,
-        decimalCombined: finalDecimals.join('')
-      },
-      billing: {
-        servicesSimple: window._currentList||[],
-        servicesDetailed: window._currentListDetailed||[],
-        total: window._currentTotal||0,
-        bearing: { model: bearingModel, cost: bearingCost, side: side },
-        additionalRepair: { name: document.getElementById('addRepairName').value.trim(), cost: document.getElementById('addRepairCost').value.trim() }
-      }
-    };
-
-    let finalContent = (window._fullBill||'') + 
-      "\n\n\n\n========================================\n" +
-      "========== JSON DATA FOR APP USE ==========\n" +
-      "========================================\n\n" +
-      JSON.stringify(jsonData, null, 2);
-
     const fileHandle=await dirHandle.getFileHandle(fileName, {create:true});
     const writable=await fileHandle.createWritable();
-    await writable.write(finalContent);
+    await writable.write(window._fullBill||'');
     await writable.close();
-    
     saveHistoryRecord(window._currentTotal||0);
     initYearFilter(); loadCustomerReportFilter();
-    document.getElementById('folderName').innerText=`✅ Saved: ${fileName} (No error, Text+JSON combined)`;
+    document.getElementById('folderName').innerText=`✅ Saved: ${dirHandle.name}/${fileName} (Rs.${window._currentTotal})`;
   }catch(e){
-    dirHandle=null; 
-    alert('Save error: '+e.message);
+    dirHandle=null; dirHandle=await pickFolder();
+    if(dirHandle){
+      try{
+        const fileHandle=await dirHandle.getFileHandle(fileName, {create:true});
+        const writable=await fileHandle.createWritable();
+        await writable.write(window._fullBill||'');
+        await writable.close();
+        saveHistoryRecord(window._currentTotal||0);
+        initYearFilter(); loadCustomerReportFilter();
+        document.getElementById('folderName').innerText=`✅ Saved: ${dirHandle.name}/${fileName} (Rs.${window._currentTotal})`;
+      }catch(err){}
+    }
   }
 }
-
 async function copyFull(){ const bill=window._fullBill||''; try{ await navigator.clipboard.writeText(bill); }catch(e){ prompt('Copy:',bill); } }
 window.addEventListener('load',()=>{loadTheme(); loadAllFields(); if(localStorage.getItem('last_raw')){ document.getElementById('rawBox').innerText=localStorage.getItem('last_raw'); if(finalDecimals.length) document.getElementById('decimalBox').innerText=`Decimal Combined : ${finalDecimals.join('')}`; } if(localStorage.getItem('folderSelectedName')){ document.getElementById('folderName').innerText='📁 Last: '+localStorage.getItem('folderSelectedName'); } if(localStorage.getItem('bearingSide')){ side=localStorage.getItem('bearingSide'); document.getElementById('singleBtn').classList.toggle('active',side==='single'); document.getElementById('bothBtn').classList.toggle('active',side==='both'); } loadCustomerList(); drawAll(); update(); initYearFilter(); loadCustomerReportFilter();});
 window.addEventListener('resize',drawAll);
 
-// Motor serial-number OCR: camera + image upload. OCR suggestions are always reviewed before insertion.
+// Motor serial-number OCR using OCR.space Free Cloud API (Reliable & High Uptime)
 (function(){
   const cameraBtn=document.getElementById('serialCameraBtn');
   const uploadBtn=document.getElementById('serialUploadBtn');
@@ -486,14 +512,16 @@ window.addEventListener('resize',drawAll);
     field.dispatchEvent(new Event('input',{bubbles:true}));
     field.dispatchEvent(new Event('change',{bubbles:true}));
   }
+
   function stopCamera(){
     if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}
     video.srcObject=null;
     modal.style.display='none';
   }
+
   async function startCamera(){
     if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-      alert('Camera access requires a supported browser and an HTTPS website. Open this page in Safari or Chrome using its HTTPS address.');
+      alert('Camera access requires a supported browser and HTTPS website.');
       return;
     }
     modal.style.display='flex';
@@ -507,162 +535,156 @@ window.addEventListener('resize',drawAll);
       await video.play();
       status.textContent='Camera ready. Position the serial number clearly, then tap Capture & Read.';
     }catch(e){
-      status.textContent='Camera could not start: '+(e.message||e.name)+'. Check browser camera permission and try again.';
+      status.textContent='Camera could not start: '+(e.message||e.name);
     }
   }
 
-  function extractCandidates(data){
-    const lines=(data.lines||[]).map(line=>{
-      const raw=(line.text||'').trim();
-      let cleaned = raw.toUpperCase().replace(/[^A-Z0-9]/g,'');
-      
-      // Common OCR edge artifacts cleanup
-      if (cleaned.startsWith('ON') && cleaned.length > 2) cleaned = cleaned.substring(2);
-      if (cleaned.startsWith('VN') && cleaned.length > 2) cleaned = cleaned.substring(2);
-      if (cleaned.startsWith('O') && /^[A-Z]\d/.test(cleaned.substring(1))) cleaned = cleaned.substring(1);
-
-      return {raw: raw, compact: cleaned, confidence: Number(line.confidence||0)};
-    }).filter(x=>x.compact.length>=8 && x.compact.length<=25 && x.confidence>=40);
+  // Prepares scaled, high-contrast canvas image to JPEG base64 string
+  function imageToDataUrl(source){
+    const canvas=document.createElement('canvas');
+    let w=source.videoWidth||source.naturalWidth||source.width;
+    let h=source.videoHeight||source.naturalHeight||source.height;
+    if(!w||!h) throw new Error('Image dimensions not ready.');
     
-    const unique=new Map();
-    for(const item of lines){
-      const old=unique.get(item.compact);
-      if(!old||item.confidence>old.confidence) unique.set(item.compact,item);
-    }
-    return [...unique.values()].sort((a,b)=>b.confidence-a.confidence);
+    // Scale up to ~1800px max width for ideal OCR.space cloud processing
+    const scale=Math.min(2.5, 1800/w);
+    canvas.width=Math.round(w*scale);
+    canvas.height=Math.round(h*scale);
+    
+    const ctx=canvas.getContext('2d');
+    ctx.drawImage(source, 0, 0, canvas.width, canvas.height);
+    
+    // Convert to JPEG Data URL
+    return canvas.toDataURL('image/jpeg', 0.85);
   }
 
-  async function recognize(source){
-    if(!window.Tesseract) throw new Error('OCR engine did not load. Check your internet connection and reload the page.');
+  // Call OCR.space Cloud API
+  async function callOcrSpaceApi(base64DataUrl){
+    const formData = new FormData();
+    formData.append('base64Image', base64DataUrl);
+    formData.append('apikey', 'helloworld'); // Free public key / register free key at ocr.space
+    formData.append('language', 'eng');
+    formData.append('isOverlayRequired', 'false');
+    formData.append('OCREngine', '2'); // Engine 2 handles alphanumeric tags and metal stamps accurately
+    formData.append('scale', 'true');
 
-    let decodedSource=source;
-    let temporaryUrl=null;
-    if(source instanceof Blob){
-      temporaryUrl=URL.createObjectURL(source);
-      decodedSource=await new Promise((resolve,reject)=>{
-        const img=new Image();
-        img.onload=()=>resolve(img);
-        img.onerror=()=>reject(new Error('The selected file is not a supported or readable image.'));
-        img.src=temporaryUrl;
-      });
-      if(!decodedSource.naturalWidth || !decodedSource.naturalHeight){
-        URL.revokeObjectURL(temporaryUrl);
-        throw new Error('The selected image could not be decoded. Try a JPG or PNG photo.');
-      }
+    const response = await fetch('https://api.ocr.space/parse/image', {
+      method: 'POST',
+      body: formData
+    });
+
+    if(!response.ok){
+      throw new Error('Cloud OCR server error: ' + response.statusText);
     }
 
-    try{
-      const w=decodedSource.videoWidth||decodedSource.naturalWidth||decodedSource.width;
-      const h=decodedSource.videoHeight||decodedSource.naturalHeight||decodedSource.height;
-      if(!w||!h) throw new Error('Image is not ready or has no readable dimensions.');
-
-      const bandFractions=[0.25, 0.35, 0.45];
-      const collected=new Map();
-      
-      for(let i=0;i<bandFractions.length;i++){
-        const bandH=Math.round(h*0.30);
-        const cy=Math.round(h*bandFractions[i]);
-        const sy=Math.max(0,Math.min(h-bandH,cy-Math.round(bandH/2)));
-        
-        const crop=document.createElement('canvas');
-        const scale=Math.min(3,2400/w);
-        crop.width=Math.round(w*scale);
-        crop.height=Math.round(bandH*scale);
-        const ctx=crop.getContext('2d',{willReadFrequently:true});
-        ctx.drawImage(decodedSource,0,sy,w,bandH,0,0,crop.width,crop.height);
-
-        const mono=document.createElement('canvas');
-        mono.width=crop.width;mono.height=crop.height;
-        const mctx=mono.getContext('2d',{willReadFrequently:true});
-        mctx.drawImage(crop,0,0);
-        const pixels=mctx.getImageData(0,0,mono.width,mono.height);
-        for(let p=0;p<pixels.data.length;p+=4){
-          const lum=0.299*pixels.data[p]+0.587*pixels.data[p+1]+0.114*pixels.data[p+2];
-          const adjusted=lum < 100 ? 0 : 255;
-          pixels.data[p]=pixels.data[p+1]=pixels.data[p+2]=adjusted;
-        }
-        mctx.putImageData(pixels,0,0);
-
-        for(const [variantIndex,variant] of [crop,mono].entries()){
-          status.textContent='Scanning serial region… '+(i+1)+' of '+bandFractions.length;
-          const result=await Tesseract.recognize(variant,'eng',{
-            logger:m=>{
-              if(m.status==='recognizing text'){
-                status.textContent='Recognizing serial… '+Math.round((m.progress||0)*100)+'%';
-              }
-            },
-            preserve_interword_spaces:'1',
-            tessedit_pageseg_mode:'6',
-            tessedit_char_whitelist:'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-          });
-          
-          for(const c of extractCandidates(result.data)){
-            const previous=collected.get(c.compact);
-            if(!previous||c.confidence>previous.confidence){
-              collected.set(c.compact,{...c,area:i+1,variant:variantIndex});
-            }
-          }
-        }
-      }
-      return [...collected.values()]
-        .sort((a,b)=>(b.confidence + (b.variant===1?5:0))-(a.confidence + (a.variant===1?5:0)))
-        .slice(0,5);
-    }finally{
-      if(temporaryUrl) URL.revokeObjectURL(temporaryUrl);
+    const data = await response.json();
+    if(data.IsErroredOnProcessing){
+      const err = (data.ErrorMessage && data.ErrorMessage[0]) || 'OCR processing failed.';
+      throw new Error(err);
     }
+
+    if(!data.ParsedResults || !data.ParsedResults.length){
+      return [];
+    }
+
+    const rawText = data.ParsedResults[0].ParsedText || '';
+    
+    // Parse individual lines / candidates
+    const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length >= 4);
+    
+    const candidates = [];
+    lines.forEach(line => {
+      let cleaned = line.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      // Common prefix glitch cleanups for motor serials
+      if(cleaned.startsWith('ON') && cleaned.length > 5) cleaned = cleaned.substring(2);
+      if(cleaned.startsWith('VN') && cleaned.length > 5) cleaned = cleaned.substring(2);
+      if(cleaned.length >= 5 && cleaned.length <= 32){
+        if(!candidates.includes(cleaned)) candidates.push(cleaned);
+      }
+    });
+
+    return candidates;
   }
 
   function reviewCandidates(candidates){
     if(!candidates.length){
-      alert('No clear serial-number text was detected. Try a closer, sharper image with good lighting and less background text.');
+      alert('No clear serial-number text was detected by the Cloud API. Try a closer, sharper image with better lighting.');
       return;
     }
-    const options=candidates.map((c,i)=>(i+1)+'. '+c.compact+'  ('+Math.round(c.confidence)+'% confidence)').join('\n');
-    const choice=prompt('OCR suggestions (choose a number) or enter the serial number manually:\n\n'+options+'\n\nEnter the list number, or type/correct the serial number:');
-    if(choice===null)return;
-    const trimmed=choice.trim();
-    let value='';
-    if(/^[1-5]$/.test(trimmed) && candidates[Number(trimmed)-1]){
-      value=candidates[Number(trimmed)-1].compact;
-    }else{
-      value=trimmed.toUpperCase().replace(/[^A-Z0-9]/g,'');
+
+    const options = candidates.map((c, i) => `${i + 1}. ${c}`).join('\n');
+    const choice = prompt('Cloud OCR Results (choose a number) or edit manually:\n\n' + options + '\n\nEnter list number or type corrected serial:');
+    if(choice === null) return;
+
+    const trimmed = choice.trim();
+    let value = '';
+    if(/^[1-9]\d*$/.test(trimmed)){
+      const idx = parseInt(trimmed, 10) - 1;
+      if(candidates[idx]) value = candidates[idx];
     }
-    if(value.length<5){
-      alert('No serial number inserted. Please select a valid suggestion or enter the number manually.');
+    if(!value){
+      value = trimmed.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    }
+
+    if(value.length < 4){
+      alert('No serial number inserted.');
       return;
     }
     setSerial(value);
   }
 
   async function processImage(source){
-    const old=uploadBtn.textContent;
-    uploadBtn.disabled=true;cameraBtn.disabled=true;captureBtn.disabled=true;
+    const oldUpload = uploadBtn.textContent;
+    uploadBtn.disabled = true; cameraBtn.disabled = true; captureBtn.disabled = true;
+    if(modal.style.display === 'flex') status.textContent = 'Uploading to Cloud OCR API…';
+
     try{
-      const candidates=await recognize(source);
-      if(modal.style.display==='flex') status.textContent='Reviewing recognised text…';
+      let dataUrl;
+      if(source instanceof Blob){
+        const img = new Image();
+        const url = URL.createObjectURL(source);
+        await new Promise((resolve, reject) => {
+          img.onload = () => resolve();
+          img.onerror = () => reject(new Error('Image file loading error.'));
+          img.src = url;
+        });
+        dataUrl = imageToDataUrl(img);
+        URL.revokeObjectURL(url);
+      } else {
+        dataUrl = imageToDataUrl(source);
+      }
+
+      if(modal.style.display === 'flex') status.textContent = 'Processing with Cloud OCR Engine 2…';
+      const candidates = await callOcrSpaceApi(dataUrl);
+
+      if(modal.style.display === 'flex') stopCamera();
       reviewCandidates(candidates);
-      if(modal.style.display==='flex') stopCamera();
     }catch(e){
-      alert('OCR could not process this image: '+(e.message||e));
+      alert('Cloud OCR error: ' + (e.message || e));
+      if(modal.style.display === 'flex') status.textContent = 'Error processing image.';
     }finally{
-      uploadBtn.disabled=false;cameraBtn.disabled=false;captureBtn.disabled=false;
-      uploadBtn.textContent=old;
+      uploadBtn.disabled = false; cameraBtn.disabled = false; captureBtn.disabled = false;
+      uploadBtn.textContent = oldUpload;
     }
   }
 
-  cameraBtn.addEventListener('click',startCamera);
-  uploadBtn.addEventListener('click',()=>imageInput.click());
-  imageInput.addEventListener('change',async e=>{
-    const file=e.target.files&&e.target.files[0];
-    if(!file)return;
+  cameraBtn.addEventListener('click', startCamera);
+  uploadBtn.addEventListener('click', () => imageInput.click());
+  imageInput.addEventListener('change', async e => {
+    const file = e.target.files && e.target.files[0];
+    if(!file) return;
     await processImage(file);
-    imageInput.value='';
+    imageInput.value = '';
   });
-  captureBtn.addEventListener('click',()=>{if(video.videoWidth)processImage(video);else status.textContent='Wait until the camera is ready.';});
-  document.getElementById('serialCameraClose').addEventListener('click',stopCamera);
-  modal.addEventListener('click',e=>{if(e.target===modal)stopCamera();});
-  window.addEventListener('pagehide',stopCamera);
+  captureBtn.addEventListener('click', () => {
+    if(video.videoWidth) processImage(video);
+    else status.textContent = 'Wait for camera video feed…';
+  });
+  document.getElementById('serialCameraClose').addEventListener('click', stopCamera);
+  modal.addEventListener('click', e => { if(e.target === modal) stopCamera(); });
+  window.addEventListener('pagehide', stopCamera);
 })();
+
 </script>
 </body>
 </html>
